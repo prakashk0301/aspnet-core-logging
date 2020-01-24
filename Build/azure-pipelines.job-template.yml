@@ -45,28 +45,6 @@ jobs:
       packageType: 'sdk'
       version: $(DotNetCore_SDK_Version)
 
-  # Install sonarscanner tool to be able to perform a SonarQube analysis.
-  # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
-  # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=azure-devops&tabs=yaml
-  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml#yaml-snippet.
-  # The long YAML line has been split using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
-  - script: >-
-      dotnet tool install dotnet-sonarscanner
-      --global 
-      --version $(SonarScanner_Version)
-    name: install_sonarscanner
-    displayName: Install SonarQube static code analyzing CLI tool
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-      )
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
-
   - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
     displayName: 'Prepare Analysis on SonarCloud'
     inputs:
