@@ -24,13 +24,26 @@ steps:
     projectKey: 'dotnetprakash'
     projectName: 'dotnetprakash'
 
+- task: DotNetCoreCLI@2
+  displayName: 'build'
+  inputs:
+    command: 'build'
+    projects: 'Todo.sln'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'test'
+  inputs:
+    command: 'test'
+    projects: '**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+    publishTestResults: true
+
+
 - task: SonarCloudAnalyze@1
 
 - task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: 'Todo.sln'
+
